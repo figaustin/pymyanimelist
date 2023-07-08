@@ -1,10 +1,10 @@
-from pymyanimelist.mal import MAL
+from _base import Base
 
-class Anime(MAL):
+class Anime(Base):
     
-    def __init__(self, name: str = None, id: int = None):
-        self._name = name
-        self._id = id
+    def __init__(self, title: str = None, id: int = None):
+    
+            
         
 
     
