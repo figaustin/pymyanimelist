@@ -3,8 +3,9 @@ import requests
 import json
 from typing import Optional
 
-from _base import Base
-from anime import Anime
+from ._base import Base
+from .anime import Anime
+from pymyanimelist import utils
 
 
 class MAL(Base):
@@ -59,8 +60,8 @@ class MAL(Base):
     
     def anime(self, id: int):
         path = f"anime/{id}"
-        data = self.send_request(path=path, method="GET", params={"fields": "title"}, client_id = self._client_id)
-        return Anime(data=data)
+        data = self.send_request(path=path, method="GET", params={"fields": "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics"}, client_id = self._client_id)
+        return utils.as_dataclass(Anime, data)
         
 
 
