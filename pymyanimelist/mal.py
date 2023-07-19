@@ -1,11 +1,9 @@
 import secrets
 import requests
-import json
-from typing import Optional
 
-from ._base import Base
-from .anime import Anime
-from pymyanimelist import utils
+from pymyanimelist._base import Base
+from pymyanimelist.models import (anime, animesearch)
+from pymyanimelist.utils import as_dataclass
 
 
 class MAL(Base):
@@ -21,7 +19,7 @@ class MAL(Base):
         token = secrets.token_urlsafe(100)
         return token[:128]
     
-    def authenticate(self):
+    def authenticate(self) -> str:
 
         """Generates a new MyAnimeList OAuth url. Redirect users to this url, to have them authorize your app with their MyAnimeList 
             Account, they will be redirected to the url you have setup in your MAL API app panel. Once they are redirected, you must
@@ -37,7 +35,7 @@ class MAL(Base):
         """
 
         if self._code_verifier is None:
-            raise ValueError('Code verifier is null, use new_auth_url() first')
+            raise ValueError('Code verifier is null, use authenticate() first')
 
         url = 'https://myanimelist.net/v1/oauth2/token'
         data = {
@@ -58,10 +56,29 @@ class MAL(Base):
 
         return token
     
-    def anime(self, id: int):
+    def anime(self, id: int) -> anime.Anime:
         path = f"anime/{id}"
         data = self.send_request(path=path, method="GET", params={"fields": "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics"}, client_id = self._client_id)
-        return utils.as_dataclass(Anime, data)
+        return as_dataclass(anime.Anime, data)
+    
+    def search(self, type: str = "anime", search: str = None, limit: int = 100, offset: int = 0):
+        
+        if search is None:
+            raise ValueError('No search term specified')
+        
+        path = f'anime'
+        data = self.send_request(path=path, method="GET", params={
+            "q": search,
+            "limit": limit,
+            "offset": offset,
+            "fields": "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics",
+        }, client_id = self._client_id)
+
+        s = animesearch.AnimeSearch(data=data)
+        return s.format_search() 
+
+
+            
         
 
 
