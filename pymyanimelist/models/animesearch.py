@@ -1,14 +1,8 @@
 from typing import Optional
-from dataclasses import dataclass
 
 from pymyanimelist._base import Base
 from pymyanimelist.models.anime import Anime
-from pymyanimelist.utils import as_dataclass
 
-
-@dataclass
-class AnimeSearchList:
-    data: list[Anime]
 
 class AnimeSearch(Base):
 
