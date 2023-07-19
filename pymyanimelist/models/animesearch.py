@@ -2,6 +2,7 @@ from typing import Optional
 
 from pymyanimelist._base import Base
 from pymyanimelist.models.anime import Anime
+from pymyanimelist.utils import as_dataclass
 
 
 class AnimeSearch(Base):
