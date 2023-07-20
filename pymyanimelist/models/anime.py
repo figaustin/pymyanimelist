@@ -2,16 +2,22 @@ from typing import Optional
 from dataclasses import dataclass
 
 from pymyanimelist._base import Base
-
+from pymyanimelist.models.helper_models import (
+    Picture,
+    AlternativeTitle,
+    Genre, 
+    StartSeason,
+    Broadcast,
+)
 
 @dataclass
-class RelatedAnimeNode():
+class RelatedAnimeNode:
     id: int
     title: str
-    main_picture: dict
+    main_picture: Picture
 
 @dataclass
-class RelatedAnime():
+class RelatedAnime:
     node: RelatedAnimeNode
     relation_type: str
     relation_type_formatted: str
@@ -21,7 +27,8 @@ class Anime(Base):
     
     id: int
     title: str
-    alternative_titles: Optional[dict]
+    main_picture: Optional[Picture]
+    alternative_titles: Optional[AlternativeTitle]
     start_date: Optional[str]
     end_date: Optional[str]
     synopsis: Optional[str]
@@ -35,14 +42,14 @@ class Anime(Base):
     updated_at: Optional[str]
     media_type: Optional[str]
     status: Optional[str]
-    genres: Optional[list[dict]]
+    genres: Optional[list[Genre]]
     num_episodes: Optional[int]
-    start_season: Optional[dict]
-    broadcast: Optional[dict]
+    start_season: Optional[StartSeason]
+    broadcast: Optional[Broadcast]
     source: Optional[str]
     average_episode_duration: Optional[int]
     rating: Optional[str]
-    pictures: Optional[list[dict]]
+    pictures: Optional[list[Picture]]
     background: Optional[str]
     related_anime: Optional[list[RelatedAnime]]
     related_manga: Optional[list[dict]]
