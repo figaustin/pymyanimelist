@@ -8,12 +8,14 @@ from pymyanimelist.utils import as_dataclass
 class AnimeSearch(Base):
 
     def __init__(self, data):
-        self.data = data["data"]
+        self.results = self._format_search(data["data"])
         
 
-    def format_search(self) -> list[Anime]:
+    def _format_search(self, data) -> list[Anime]:
+        """Cleans up the API response for ease of use."""
+
         new_arr = []
-        for i in self.data:
+        for i in data:
             val = i["node"]
             new_arr.append(as_dataclass(Anime, val))
         return new_arr

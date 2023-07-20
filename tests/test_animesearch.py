@@ -11,7 +11,7 @@ class TestAnimeSearch(unittest.TestCase):
         load_dotenv()
         mal = pymyanimelist.MAL(client_id=os.getenv('CLIENT_ID'), client_secret=os.getenv('CLIENT_SECRET'))
 
-        s = mal.search(type="anime", search="one")
+        s = mal.search(search_type= "anime", search="akame")
         for i in s:
             print(i.title)
 
