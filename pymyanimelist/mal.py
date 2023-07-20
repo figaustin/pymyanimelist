@@ -8,6 +8,8 @@ from pymyanimelist.utils import as_dataclass
 
 class MAL(Base):
     
+    fields_default = "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics"
+
     def __init__(self, client_id: str = None, client_secret: str = None):
         self._client_id = client_id
         self._client_secret = client_secret
@@ -56,26 +58,50 @@ class MAL(Base):
 
         return token
     
-    def anime(self, id: int) -> anime.Anime:
+    def anime(self, id: int, fields: str = fields_default) -> anime.Anime:
+        """Gets an anime object by its MyAnimeList Id."""
+
         path = f"anime/{id}"
-        data = self.send_request(path=path, method="GET", params={"fields": "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics"}, client_id = self._client_id)
+        data = self.send_request(path=path, method="GET", params={
+            "fields": fields},
+            client_id = self._client_id)
         return as_dataclass(anime.Anime, data)
     
-    def search(self, type: str = "anime", search: str = None, limit: int = 100, offset: int = 0):
+    def search(self, search_type: str = "anime", search: str = None, limit: int = 100, offset: int = 0, fields: str = fields_default):
+        """Searches for either an anime or manga and returns the respective object."""
+
+        if search_type is None:
+            raise ValueError('No search type specified')
         
-        if search is None:
-            raise ValueError('No search term specified')
+        if search_type != "anime" or search_type != "manga":
+            raise ValueError("Search type must 'anime' or 'manga'")
         
-        path = f'anime'
-        data = self.send_request(path=path, method="GET", params={
+        data = self.send_request(path=search_type, method="GET", params={
             "q": search,
             "limit": limit,
             "offset": offset,
-            "fields": "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics",
-        }, client_id = self._client_id)
+            "fields": fields,
+        },
+        client_id = self._client_id)
 
-        s = animesearch.AnimeSearch(data=data)
-        return s.format_search() 
+        if search_type is "anime":
+            search_results = animesearch.AnimeSearch(data=data)
+            return search_results
+        
+            # enter manga search
+    
+    def anime_ranking(self, ranking_type: str = "all", limit: int = 100, offset: int = 0, fields: str = fields_default):
+        
+        path = 'anime/ranking'
+        data = self.send_request(path=path, method="GET", params={
+            "ranking_type": ranking_type,
+            "limit": limit,
+            "offset": offset,
+            "fields": fields,
+        },
+        client_id = self._client_id)
+
+    
 
 
             
