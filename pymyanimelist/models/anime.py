@@ -23,7 +23,7 @@ class RelatedAnime:
     relation_type_formatted: str
 
 @dataclass
-class Anime(Base):
+class Anime:
     
     id: int
     title: str

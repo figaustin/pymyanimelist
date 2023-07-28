@@ -73,7 +73,7 @@ class MAL(Base):
         if search_type is None:
             raise ValueError('No search type specified')
         
-        if search_type != "anime" or search_type != "manga":
+        if search_type != "anime" and search_type != "manga":
             raise ValueError("Search type must 'anime' or 'manga'")
         
         data = self.send_request(path=search_type, method="GET", params={
@@ -85,8 +85,7 @@ class MAL(Base):
         client_id = self._client_id)
 
         if search_type is "anime":
-            search_results = animesearch.AnimeSearch(data=data)
-            return search_results
+            return as_dataclass(animesearch.AnimeSearch, data)
         
             # enter manga search
     
