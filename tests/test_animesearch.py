@@ -11,8 +11,8 @@ class TestAnimeSearch(unittest.TestCase):
         load_dotenv()
         mal = pymyanimelist.MAL(client_id=os.getenv('CLIENT_ID'), client_secret=os.getenv('CLIENT_SECRET'))
 
-        s = mal.search(search_type="anim", search="akame")
-        print(s)
+        s = mal.search(search_type="anime", search="akame")
+        print(s.data[0].node.title)
 
 if __name__ == '__main__':
     unittest.main()
